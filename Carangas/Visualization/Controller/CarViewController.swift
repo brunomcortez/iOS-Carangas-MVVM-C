@@ -15,6 +15,7 @@ class CarViewController: UIViewController {
     @IBOutlet weak var loading: UIActivityIndicatorView!
 
     var viewModel: CarViewModel?
+    weak var coordinator: CarCoordinator?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,9 +29,21 @@ class CarViewController: UIViewController {
         lbGasType.text = viewModel?.gas
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        if isMovingFromParent {
+            if let coordinator = coordinator {
+                coordinator.childDidFinish(coordinator)
+            }
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? AddEditViewController, let car = viewModel?.car {
             vc.viewModel = AddEditViewModel(car: car)
         }
+    }
+    
+    deinit {
+        print("CarViewController - deinit")
     }
 }

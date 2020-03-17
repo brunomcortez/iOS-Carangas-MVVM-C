@@ -10,6 +10,7 @@ import UIKit
 class CarsTableViewController: UITableViewController {
 
     lazy var viewModel: CarsViewModel = CarsViewModel()
+    weak var coordinator: CarsCoordinator?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,23 +23,27 @@ class CarsTableViewController: UITableViewController {
         loadCars()
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        switch segue.destination {
-            
-            case let carViewController as CarViewController:
-                let indexPath = tableView.indexPathForSelectedRow!
-                let car = viewModel.getCarAt(indexPath: indexPath)
-                carViewController.viewModel = CarViewModel(car: car)
-                break
-                
-            case let addEditViewController as AddEditViewController:
-                addEditViewController.viewModel = AddEditViewModel()
-                break
-                
-            default:
-                break
-            }
-        }
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        switch segue.destination {
+//
+//            case let carViewController as CarViewController:
+//                let indexPath = tableView.indexPathForSelectedRow!
+//                let car = viewModel.getCarAt(indexPath: indexPath)
+//                carViewController.viewModel = CarViewModel(car: car)
+//                break
+//
+//            case let addEditViewController as AddEditViewController:
+//                addEditViewController.viewModel = AddEditViewModel()
+//                break
+//
+//            default:
+//                break
+//            }
+//        }
+    
+//    @IBAction createCar(selnder: Any) {
+//
+//    }
     
     @objc func loadCars() {
         viewModel.loadCars()
@@ -75,5 +80,10 @@ class CarsTableViewController: UITableViewController {
                 }
             }
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let car = viewModel.getCarAt(indexPath: indexPath)
+        coordinator?.showCar(car)
     }
 }
